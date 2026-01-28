@@ -1,6 +1,7 @@
 import { AppLoggerModule } from '@app/shared';
 import { Services } from '@app/shared/general/services.contants';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AssetModule } from '../asset/asset.module';
@@ -11,14 +12,18 @@ import { BalanceService } from './balance.service';
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: Services.RATE,
-        transport: Transport.TCP,
-        options: {
-          host: 'rate-service',
-          port: 3002,
-        },
+        imports: [ConfigModule],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: 'rate-service',
+            port: configService.get<number>('RATE_SERVICE_PORT', 3002),
+          },
+        }),
+        inject: [ConfigService],
       },
     ]),
     AppLoggerModule,

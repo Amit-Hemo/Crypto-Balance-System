@@ -19,12 +19,17 @@ import { Balance } from './entities/Balance';
       isGlobal: true,
       validationSchema: joi.object({
         PORT: joi.number().port().default(3001),
+        RATE_SERVICE_PORT: joi.number().port().default(3002),
         DB_HOST: joi.string().trim().min(1).required(),
         DB_PORT: joi.number().port().required(),
         DB_USER: joi.string().trim().min(1).required(),
         DB_NAME: joi.string().trim().min(1).required(),
         DB_PASSWORD: joi.string().trim().min(1).required(),
         COINGECKO_API_KEY: joi.string().trim().min(20).required(),
+        COINGECKO_API_BASE_URL: joi
+          .string()
+          .uri()
+          .default('https://api.coingecko.com/api/v3'),
       }),
     }),
     TypeOrmModule.forRootAsync({

@@ -5,13 +5,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Asset } from '../entities/Asset';
 import { AssetService } from './asset.service';
+import { TTlTimes } from '@app/shared/cache/ttl-times';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Asset]),
     AppLoggerModule,
     HttpModule.register({
-      timeout: 5000,
+      timeout: TTlTimes.SECOND * 5,
       maxRedirects: 2,
     }),
     ScheduleModule.forRoot(),

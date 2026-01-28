@@ -1,4 +1,5 @@
 import { AppLoggerModule } from '@app/shared';
+import { TTlTimes } from '@app/shared/cache/ttl-times';
 import { AllExceptionsFilter } from '@app/shared/error-handling/http-exception/http-exception.filter';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
@@ -18,6 +19,8 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
       validationSchema: joi.object({
         PORT: joi.number().port().default(3000),
+        BALANCE_SERVICE_PORT: joi.number().port().default(3001),
+        USER_SERVICE_PORT: joi.number().port().default(3003),
         JWT_SECRET: joi.string().trim().base64(),
       }),
     }),
@@ -28,7 +31,7 @@ import { UserModule } from './user/user.module';
     CacheModule.register({ isGlobal: true }),
     ThrottlerModule.forRoot([
       {
-        ttl: 15 * 60 * 1000,
+        ttl: TTlTimes.MINUTE * 15,
         limit: 100,
       },
     ]),

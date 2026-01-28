@@ -22,7 +22,17 @@ describe('AssetService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AssetService,
-        ConfigService,
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              if (key === 'COINGECKO_API_BASE_URL') {
+                return 'https://api.coingecko.com/api/v3';
+              }
+              return undefined;
+            }),
+          },
+        },
         {
           provide: ASSET_REPOSITORY_TOKEN,
           useValue: mockRepository,

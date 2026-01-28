@@ -180,7 +180,8 @@ export class RateService {
   }
 
   private generateRequestURL(assetIds: string[], currency: string): string {
+    const baseUrl = this.configService.get<string>('COINGECKO_API_BASE_URL');
     const requestAssetIds = assetIds.join(',');
-    return `https://api.coingecko.com/api/v3/simple/price?ids=${requestAssetIds}&vs_currencies=${currency}&precision=2`;
+    return `${baseUrl}/simple/price?ids=${requestAssetIds}&vs_currencies=${currency}&precision=2`;
   }
 }

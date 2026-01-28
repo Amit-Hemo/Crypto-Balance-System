@@ -64,10 +64,11 @@ export class AssetService {
 
   private async fetchAvailableAssets(): Promise<CoinGeckoApiAssetResponse[]> {
     const apiKey = this.configService.get<string>('COINGECKO_API_KEY');
-    const requestUrl = 'https://api.coingecko.com/api/v3/coins/list';
+    const baseUrl = this.configService.get<string>('COINGECKO_API_BASE_URL');
+
     const { data } = await firstValueFrom(
       this.httpService
-        .get<CoinGeckoApiAssetResponse[]>(requestUrl, {
+        .get<CoinGeckoApiAssetResponse[]>(`${baseUrl}/coins/list`, {
           headers: {
             'x-cg-demo-api-key': apiKey,
           },
