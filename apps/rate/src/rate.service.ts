@@ -128,6 +128,7 @@ export class RateService {
       const isEmpty = Object.keys(rateCurrencyPair).length === 0;
       // CoinGecko API omits Rate-Curreny pairs inside for all assets when currency is invalid, so I stop here
       if (isEmpty) break;
+
       fetchedResults.push({ [assetId]: rateCurrencyPair[currency] });
     }
     return fetchedResults;
@@ -182,6 +183,6 @@ export class RateService {
   private generateRequestURL(assetIds: string[], currency: string): string {
     const baseUrl = this.configService.get<string>('COINGECKO_API_BASE_URL');
     const requestAssetIds = assetIds.join(',');
-    return `${baseUrl}/simple/price?ids=${requestAssetIds}&vs_currencies=${currency}&precision=2`;
+    return `${baseUrl}/simple/price?ids=${requestAssetIds}&vs_currencies=${currency}&precision=18`;
   }
 }

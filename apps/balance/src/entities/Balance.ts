@@ -33,8 +33,8 @@ export class Balance {
   asset: Asset;
 
   @Column('decimal', {
-    precision: 5,
-    scale: 2,
+    precision: 18,
+    scale: 8,
     transformer: new DecimalColumnTransformer(),
   })
   amount: number;

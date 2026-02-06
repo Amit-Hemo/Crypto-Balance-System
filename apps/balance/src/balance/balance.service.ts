@@ -160,12 +160,16 @@ export class BalanceService {
         assetInfo: { ...assetInfo },
         amount,
       };
-      if (!ratesMap.has(assetInfo.search_id)) {
-        resultAsset.valueInCurrency = 0;
-        break;
-      }
       const rate = ratesMap.get(assetInfo.search_id);
-      resultAsset.valueInCurrency = this.calculateBalanceValue(amount, rate);
+      if (!rate) {
+        // shouldn't happen since we don't allow adding unsupported assets
+        resultAsset.valueInCurrency = 0;
+        this.logger.warn(
+          `Rate not found for asset ${assetInfo.search_id}, setting value to 0`,
+        );
+      } else {
+        resultAsset.valueInCurrency = this.calculateBalanceValue(amount, rate);
+      }
       res.assets.push(resultAsset);
     }
 
@@ -273,13 +277,13 @@ export class BalanceService {
       return total + valueInCurrency;
     }, 0);
 
-    return Number(totalValue.toFixed(2));
+    return Number(totalValue.toFixed(8));
   }
 
   private calculateBalanceValue(
     amount: number,
     rateInCurrency: number,
   ): number {
-    return Number((amount * rateInCurrency).toFixed(2));
+    return Number((amount * rateInCurrency).toFixed(8));
   }
 }
