@@ -10,28 +10,37 @@ import {
 import { UserModule } from './user.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(UserModule);
+  const logger = new AppLoggerService();
+
+  const app = await NestFactory.createApplicationContext(UserModule, {
+    logger: false,
+  });
   const configService = app.get(ConfigService);
 
   const microservice =
     await NestFactory.createMicroservice<MicroserviceOptions>(UserModule, {
       transport: Transport.TCP,
       options: {
-        host: 'user-service',
-        port: configService.get<number>('PORT'),
+        host: configService.get<string>('HOST', 'localhost'),
+        port: configService.get<number>('PORT', 3003),
       },
-      bufferLogs: true,
+      logger,
     });
+
+  await app.close();
+
+  microservice.useLogger(logger);
 
   microservice.useGlobalPipes(
     new ValidationPipe({
       forbidUnknownValues: true,
-      exceptionFactory: (errors) =>
-        new RpcException(new BadRequestException(errors)),
+      transform: true,
+      exceptionFactory: (errors) => {
+        logger.error(`Validation failed: ${errors}`);
+        return new RpcException(new BadRequestException(errors));
+      },
     }),
   );
-  const logger = await microservice.resolve(AppLoggerService);
-  microservice.useLogger(logger);
 
   await microservice.listen();
   logger.log('User service is listening for requests.');

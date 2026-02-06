@@ -1,4 +1,5 @@
 import { AppLoggerService } from '@app/shared';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -6,7 +7,12 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const logger = new AppLoggerService();
+
+  const app = await NestFactory.create(AppModule, { logger });
+
+  app.useLogger(logger);
+
   app.setGlobalPrefix('/api/v1');
   app.enableCors();
   app.use(helmet());
@@ -22,8 +28,16 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
-  const logger = await app.resolve(AppLoggerService);
-  app.useLogger(logger);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      forbidUnknownValues: true,
+      transform: true,
+      exceptionFactory: (errors) => {
+        logger.error(`Validation failed: ${errors}`);
+        return new BadRequestException(errors);
+      },
+    }),
+  );
 
   const configService = app.get(ConfigService);
   const PORT = configService.get<number>('PORT');

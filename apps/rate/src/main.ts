@@ -10,29 +10,37 @@ import {
 import { RateModule } from './rate.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(RateModule);
+  const logger = new AppLoggerService();
+
+  const app = await NestFactory.createApplicationContext(RateModule, {
+    logger: false,
+  });
   const configService = app.get(ConfigService);
 
   const microservice =
     await NestFactory.createMicroservice<MicroserviceOptions>(RateModule, {
       transport: Transport.TCP,
       options: {
-        host: 'rate-service',
-        port: configService.get<number>('PORT'),
+        host: configService.get<string>('HOST', 'localhost'),
+        port: configService.get<number>('PORT', 3002),
       },
-      bufferLogs: true,
+      logger,
     });
+
+  await app.close();
+
+  microservice.useLogger(logger);
 
   microservice.useGlobalPipes(
     new ValidationPipe({
       forbidUnknownValues: true,
-      exceptionFactory: (errors) =>
-        new RpcException(new BadRequestException(errors)),
+      transform: true,
+      exceptionFactory: (errors) => {
+        logger.error(`Validation failed: ${errors}`);
+        return new RpcException(new BadRequestException(errors));
+      },
     }),
   );
-
-  const logger = await microservice.resolve(AppLoggerService);
-  microservice.useLogger(logger);
 
   await microservice.listen();
   logger.log('Rate service is listening for requests.');

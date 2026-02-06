@@ -24,6 +24,7 @@ export class LoginValidationMiddleware implements NestMiddleware {
     const credentials = plainToInstance(LoginCredentialsDto, req.body);
     const validationErrors = await validate(credentials);
     if (validationErrors.length > 0) {
+      this.logger.error(`Validation failed: ${validationErrors}`);
       throw new BadRequestException(validationErrors);
     }
     this.logger.log('Validation Middleware: Successfully validated');

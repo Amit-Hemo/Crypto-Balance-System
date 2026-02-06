@@ -10,7 +10,6 @@ import {
 } from '@app/shared/interfaces/auth.interface';
 import { User } from '@app/shared/interfaces/user.interface';
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -19,20 +18,12 @@ import {
   Post,
   Req,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
-@UsePipes(
-  new ValidationPipe({
-    forbidUnknownValues: true,
-    exceptionFactory: (errors) => new BadRequestException(errors),
-  }),
-)
 @ApiTags('auth')
 @Controller(Routes.AUTH)
 export class AuthController {
@@ -71,7 +62,7 @@ export class AuthController {
   @Post('login')
   async login(@AuthUser() user: User) {
     this.logger.log(
-      `Recieved request to grant access token to user: ${user.id}`,
+      `Received request to grant access token to user: ${user.id}`,
     );
     try {
       const token = await this.authService.login(user);
@@ -93,7 +84,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   async logout(@Req() req: LoginAuthRequest) {
-    this.logger.log('Recieved request to logout user');
+    this.logger.log('Received request to logout user');
     const token = req.headers.authorization.split(' ')[1];
     try {
       await this.authService.revokeToken(token);
@@ -115,7 +106,7 @@ export class AuthController {
   @Get('profile')
   async getProfile(@AuthUser() user: AuthenticatedUser) {
     try {
-      this.logger.log('Recieved request to get user profile');
+      this.logger.log('Received request to get user profile');
       const profile = await this.authService.getProfile(user.id);
       const message = `Successfully retrieved user profile for ${user.id}`;
       return new SuccessResponse(message, profile);
