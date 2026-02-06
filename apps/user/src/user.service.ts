@@ -76,7 +76,7 @@ export class UserService {
     } catch (error) {
       const message = `Failed to retrieve user: ${error?.message ?? ''}`;
       this.logger.error(message);
-      throw new RpcException('Successfully retrieved user if exists or null');
+      throw new RpcException('Failed to retrieve user');
     }
   }
 
