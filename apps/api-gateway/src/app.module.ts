@@ -19,6 +19,8 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
       validationSchema: joi.object({
         PORT: joi.number().port().default(3000),
+        BALANCE_SERVICE_HOST: joi.string().trim().min(1).default('localhost'),
+        USER_SERVICE_HOST: joi.string().trim().min(1).default('localhost'),
         BALANCE_SERVICE_PORT: joi.number().port().default(3001),
         USER_SERVICE_PORT: joi.number().port().default(3003),
         JWT_SECRET: joi.string().trim().base64(),

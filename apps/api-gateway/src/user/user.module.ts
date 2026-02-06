@@ -14,7 +14,7 @@ import { UserService } from './user.service';
         useFactory: (configService: ConfigService) => ({
           transport: Transport.TCP,
           options: {
-            host: 'user-service',
+            host: configService.get<string>('USER_SERVICE_HOST', 'localhost'),
             port: configService.get<number>('USER_SERVICE_PORT', 3003),
           },
         }),

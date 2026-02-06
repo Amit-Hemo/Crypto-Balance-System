@@ -13,7 +13,10 @@ import { BalanceController } from './balance.controller';
         useFactory: (configService: ConfigService) => ({
           transport: Transport.TCP,
           options: {
-            host: 'balance-service',
+            host: configService.get<string>(
+              'BALANCE_SERVICE_HOST',
+              'localhost',
+            ),
             port: configService.get<number>('BALANCE_SERVICE_PORT', 3001),
           },
         }),

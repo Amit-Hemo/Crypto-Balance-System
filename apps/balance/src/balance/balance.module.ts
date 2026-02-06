@@ -19,7 +19,7 @@ import { BalanceService } from './balance.service';
         useFactory: (configService: ConfigService) => ({
           transport: Transport.TCP,
           options: {
-            host: 'rate-service',
+            host: configService.get<string>('RATE_SERVICE_HOST', 'localhost'),
             port: configService.get<number>('RATE_SERVICE_PORT', 3002),
           },
         }),

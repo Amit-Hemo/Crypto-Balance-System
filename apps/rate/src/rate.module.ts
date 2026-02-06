@@ -19,6 +19,7 @@ import { TTlTimes } from '@app/shared/cache/ttl-times';
       cache: true,
       isGlobal: true,
       validationSchema: joi.object({
+        HOST: joi.string().trim().min(1).default('localhost'),
         PORT: joi.number().port().default(3002),
         COINGECKO_API_KEY: joi.string().min(20).required(),
         COINGECKO_API_BASE_URL: joi
