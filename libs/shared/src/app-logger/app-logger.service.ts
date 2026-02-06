@@ -1,7 +1,5 @@
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
-import * as path from 'path';
 import * as winston from 'winston';
-import { discoverServicePath } from '../general/service-path.util';
 import { LogMetadata } from './app-logger.interface';
 import { logLevels } from './log-levels';
 
@@ -10,7 +8,7 @@ export class AppLoggerService implements LoggerService {
   private readonly logger: winston.Logger;
 
   constructor() {
-    const LOG_DIR_PATH = path.join(discoverServicePath(__dirname), 'logs');
+    const isDev = process.env.NODE_ENV === 'development';
 
     this.logger = winston.createLogger({
       level: logLevels.INFO,
@@ -20,35 +18,20 @@ export class AppLoggerService implements LoggerService {
       ),
       defaultMeta: { service: 'App' },
       transports: [
-        new winston.transports.File({
-          filename: path.join(LOG_DIR_PATH, `${logLevels.ERROR}.log`),
-          level: logLevels.ERROR,
-        }),
-        new winston.transports.File({
-          filename: path.join(LOG_DIR_PATH, `${logLevels.WARN}.log`),
-          level: logLevels.WARN,
-        }),
-        new winston.transports.File({
-          filename: path.join(LOG_DIR_PATH, `${logLevels.INFO}.log`),
-          level: logLevels.INFO,
+        new winston.transports.Console({
+          format: isDev
+            ? winston.format.combine(
+                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                winston.format.printf(
+                  ({ level, message, timestamp, service }: LogMetadata) =>
+                    `${timestamp} ${level.toUpperCase()} [${service}] ${message}`,
+                ),
+                winston.format.colorize({ all: true }),
+              )
+            : undefined,
         }),
       ],
     });
-
-    if (process.env.NODE_ENV !== 'production') {
-      this.logger.add(
-        new winston.transports.Console({
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            winston.format.printf(
-              ({ level, message, timestamp, service }: LogMetadata) =>
-                `${timestamp}   ${level.toUpperCase()} [${service}] ${message}`,
-            ),
-            winston.format.colorize({ all: true }),
-          ),
-        }),
-      );
-    }
   }
 
   setContext(context: string = 'App') {
