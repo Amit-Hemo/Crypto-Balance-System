@@ -4,13 +4,17 @@ import { Services } from '@app/shared/general/services.contants';
 import { BalanceAsset } from '@app/shared/interfaces/asset.interface';
 import { UserBalance } from '@app/shared/interfaces/balance.interface';
 import { RatesResponse } from '@app/shared/interfaces/rate.interface';
-import { mockRepository } from '@app/shared/mocks';
+import {
+  mockDataSource,
+  mockQueryRunner,
+  mockRepository,
+} from '@app/shared/mocks';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { of } from 'rxjs';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { AssetService } from '../asset/asset.service';
 import { Asset } from '../entities/Asset';
@@ -22,6 +26,7 @@ describe('BalanceService', () => {
   let balanceService: BalanceService;
   let assetService: AssetService;
   let balanceRepository: Repository<Balance>;
+  let dataSource: DataSource;
 
   const BALANCE_REPOSITORY_TOKEN = getRepositoryToken(Balance);
 
@@ -54,6 +59,10 @@ describe('BalanceService', () => {
             send: jest.fn(),
           },
         },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
       ],
     }).compile();
 
@@ -61,6 +70,7 @@ describe('BalanceService', () => {
     assetService = module.get<AssetService>(AssetService);
     clientRateService = module.get<ClientProxy>(Services.RATE);
     balanceRepository = module.get(BALANCE_REPOSITORY_TOKEN);
+    dataSource = module.get<DataSource>(DataSource);
   });
 
   afterEach(() => {
@@ -441,7 +451,7 @@ describe('BalanceService', () => {
   });
 
   describe('rebalance, happy flow', () => {
-    it('should rebalance the assets correctly if provided and in user balance', async () => {
+    it('should rebalance the assets correctly if provided and in user balance, using transaction', async () => {
       const userId = 1;
       const currency = 'usd';
       const firstSearchId = 'bitcoin';
@@ -476,20 +486,28 @@ describe('BalanceService', () => {
         userId,
         assets,
       };
-      const queryBuilder = balanceRepository.createQueryBuilder();
 
       jest
         .spyOn(balanceService, 'getBalancesValues')
         .mockResolvedValueOnce(userBalance);
 
       await balanceService.rebalance(userId, currency, targetPercentages);
+
+      expect(dataSource.createQueryRunner).toHaveBeenCalled();
+      expect(mockQueryRunner.connect).toHaveBeenCalled();
+      expect(mockQueryRunner.startTransaction).toHaveBeenCalled();
       expect(balanceService.getBalancesValues).toHaveBeenCalledWith(
         userId,
         currency,
       );
-      expect(queryBuilder.update).toHaveBeenCalledTimes(2);
-      expect(queryBuilder.update().set).toHaveBeenCalledWith({ amount: 0.75 });
-      expect(queryBuilder.update().set).toHaveBeenCalledWith({ amount: 3 });
+
+      const updateBuilder = mockQueryRunner.manager.createQueryBuilder();
+      expect(updateBuilder.update).toHaveBeenCalledTimes(2);
+      expect(updateBuilder.set).toHaveBeenCalledWith({ amount: 0.75 });
+      expect(updateBuilder.set).toHaveBeenCalledWith({ amount: 3 });
+
+      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.release).toHaveBeenCalled();
     });
   });
 
@@ -519,6 +537,8 @@ describe('BalanceService', () => {
         userId,
         currency,
       );
+      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.release).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if not all provided assets are in user balance', async () => {
@@ -557,6 +577,8 @@ describe('BalanceService', () => {
         userId,
         currency,
       );
+      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.release).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if there are invalid assets provided to rebalance', async () => {
@@ -607,6 +629,8 @@ describe('BalanceService', () => {
         userId,
         currency,
       );
+      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.release).toHaveBeenCalled();
     });
   });
 });

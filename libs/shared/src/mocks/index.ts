@@ -17,3 +17,24 @@ export const mockRepository = {
     execute: jest.fn(),
   }),
 };
+
+export const mockQueryRunner = {
+  connect: jest.fn(),
+  startTransaction: jest.fn(),
+  commitTransaction: jest.fn(),
+  rollbackTransaction: jest.fn(),
+  release: jest.fn(),
+  manager: {
+    createQueryBuilder: jest.fn().mockReturnValue({
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      execute: jest.fn(),
+    }),
+  },
+};
+
+export const mockDataSource = {
+  createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
+};

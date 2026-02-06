@@ -14,7 +14,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom } from 'rxjs';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AssetService } from '../asset/asset.service';
 import { Balance } from '../entities/Balance';
 
@@ -26,6 +26,7 @@ export class BalanceService {
     private readonly balanceRepository: Repository<Balance>,
     private readonly assetService: AssetService,
     @Inject(Services.RATE) private readonly clientRateService: ClientProxy,
+    private readonly dataSource: DataSource,
   ) {
     this.logger.setContext(BalanceService.name);
   }
@@ -192,6 +193,10 @@ export class BalanceService {
     currency: string,
     targetPercentages: Record<string, number>,
   ): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const { assets: balanceAssets } = await this.getBalancesValues(
         userId,
@@ -233,12 +238,12 @@ export class BalanceService {
         const rate = valueInCurrency / amount;
         const newAmount = targetValue / rate;
 
-        await this.balanceRepository
-          .createQueryBuilder('balance')
-          .update()
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update(Balance)
           .set({ amount: newAmount })
-          .where('balance.user_id = :userId', { userId })
-          .andWhere('balance.asset_id = :assetId', { assetId: assetInfo.id })
+          .where('user_id = :userId', { userId })
+          .andWhere('asset_id = :assetId', { assetId: assetInfo.id })
           .execute();
 
         const deltaToChange = Math.abs(amount - newAmount);
@@ -252,12 +257,17 @@ export class BalanceService {
           );
         }
       }
+
+      await queryRunner.commitTransaction();
       this.logger.log(`Rebalance completed successfully for user ${userId}.`);
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       this.logger.error(
         `Failed to rebalance assets for user ${userId}: ${error?.message ?? ''}`,
       );
       throw error;
+    } finally {
+      await queryRunner.release();
     }
   }
 
