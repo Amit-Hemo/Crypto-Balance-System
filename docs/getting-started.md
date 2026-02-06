@@ -4,7 +4,7 @@ This guide will help you set up the **Crypto Balance System** locally for develo
 
 ## Prerequisites
 
-- **Node.js**: v18 or higher (LTS recommended)
+- **Node.js**: v24.13.0 or higher
 - **npm**: Installed with Node.js
 - **PostgreSQL**: A running instance (local or Docker)
 - **Docker** (Optional): For running infrastructure services via `compose.yml`

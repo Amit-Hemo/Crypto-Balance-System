@@ -35,5 +35,5 @@
 LICENSE
 README.md
 
-.eslintrc.js
+eslint.config.js
 .prettierrc

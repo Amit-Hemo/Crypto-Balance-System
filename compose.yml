@@ -4,8 +4,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
-    environment:
-      NODE_ENV: development
     env_file:
       - ./apps/api-gateway/.env
     ports:
@@ -16,8 +14,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/balance/Dockerfile
-    environment:
-      NODE_ENV: development
     env_file:
       - ./apps/balance/.env
     ports:
@@ -31,8 +27,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/rate/Dockerfile
-    environment:
-      NODE_ENV: development
     env_file:
       - ./apps/rate/.env
     ports:
@@ -43,8 +37,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/user/Dockerfile
-    environment:
-      NODE_ENV: development
     env_file:
       - ./apps/user/.env
     ports:
@@ -60,7 +52,7 @@ services:
     secrets:
       - postgres-balance-password
     volumes:
-      - postgres-balance-data:/var/lib/postgresql/data
+      - postgres-balance-data:/var/lib/postgresql/
     environment:
       - POSTGRES_DB=balances_db
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres-balance-password
@@ -79,7 +71,7 @@ services:
     secrets:
       - postgres-user-password
     volumes:
-      - postgres-user-data:/var/lib/postgresql/data
+      - postgres-user-data:/var/lib/postgresql
     environment:
       - POSTGRES_DB=users_db
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres-user-password
