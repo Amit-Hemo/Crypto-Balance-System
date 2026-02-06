@@ -1,6 +1,9 @@
 import { AuthUser } from '@app/shared/decorators/auth-user.decorator';
 import { AddAssetDto, AddAssetPayloadDto } from '@app/shared/dto/add-asset.dto';
-import { BalanceValueDto } from '@app/shared/dto/balance-value.dto';
+import {
+  BalanceValueDto,
+  CurrencyDto,
+} from '@app/shared/dto/balance-value.dto';
 import {
   RebalancePayloadDto,
   TargetPercentagesDto,
@@ -87,9 +90,9 @@ export class BalanceController {
   @Get('assets')
   async getBalancesValues(
     @AuthUser() user: AuthenticatedUser,
-    @Query('currency') currency: string,
+    @Query() query: CurrencyDto,
   ) {
-    const payload: BalanceValueDto = { userId: user.id, currency };
+    const payload: BalanceValueDto = { userId: user.id, ...query };
     return this.clientBalanceService.send(
       { cmd: MessagePatterns.GET_BALANCE },
       payload,
@@ -105,9 +108,9 @@ export class BalanceController {
   @Get('total')
   async getTotalBalance(
     @AuthUser() user: AuthenticatedUser,
-    @Query('currency') currency: string,
+    @Query() query: CurrencyDto,
   ) {
-    const payload: BalanceValueDto = { userId: user.id, currency };
+    const payload: BalanceValueDto = { userId: user.id, ...query };
     return this.clientBalanceService.send(
       { cmd: MessagePatterns.GET_TOTAL_BALANCE_VALUE },
       payload,
@@ -123,14 +126,14 @@ export class BalanceController {
   @Put('rebalance')
   async rebalance(
     @AuthUser() user: AuthenticatedUser,
-    @Query('currency') currency: string,
-    @Body() targetPercentages: TargetPercentagesDto,
+    @Query() query: CurrencyDto,
+    @Body() body: TargetPercentagesDto,
   ) {
     const DEFAULT_CURRENCY = 'usd';
     const payload: RebalancePayloadDto = {
       userId: user.id,
-      currency: currency || DEFAULT_CURRENCY, //usd is a common default currency around the world
-      targetPercentages: targetPercentages.targetPercentages,
+      currency: query.currency || DEFAULT_CURRENCY, //usd is a common default currency around the world
+      targetPercentages: body.targetPercentages,
     };
 
     return this.clientBalanceService.send(

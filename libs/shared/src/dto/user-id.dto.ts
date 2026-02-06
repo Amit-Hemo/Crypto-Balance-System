@@ -1,7 +1,10 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsPositive } from 'class-validator';
 
 export class UserIdDto {
-  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   @IsNotEmpty()
+  @IsPositive()
   userId: number;
 }

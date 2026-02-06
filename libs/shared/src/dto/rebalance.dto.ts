@@ -35,9 +35,7 @@ export class IsPercentageSumValid implements ValidatorConstraintInterface {
 }
 
 @ValidatorConstraint({ async: false })
-export class IsValidPercentagesConstraint
-  implements ValidatorConstraintInterface
-{
+export class IsValidPercentagesConstraint implements ValidatorConstraintInterface {
   validate(
     targetPercentages: Record<string, number>,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

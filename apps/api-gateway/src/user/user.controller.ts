@@ -1,16 +1,9 @@
 import { AuthUser } from '@app/shared/decorators/auth-user.decorator';
 import { CreateUserDto } from '@app/shared/dto/create-user.dto';
+import { UserIdDto } from '@app/shared/dto/user-id.dto';
 import { Routes } from '@app/shared/general/routes.constants';
 import { AuthenticatedUser } from '@app/shared/interfaces/auth.interface';
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserService } from './user.service';
@@ -34,12 +27,12 @@ export class UserController {
    * Get a user by id
    * @param selectUserId The id of the user we want to get
    */
-  @Get(':selectUserId')
+  @Get(':userId')
   async getUserById(
     @AuthUser() user: AuthenticatedUser,
-    @Param('selectUserId', ParseIntPipe) selectUserId: number,
+    @Param() params: UserIdDto,
   ) {
-    return this.userService.getUserById(user.id, selectUserId);
+    return this.userService.getUserById(user.id, params.userId);
   }
 
   /**
