@@ -9,11 +9,9 @@ import { RpcException } from '@nestjs/microservices';
 import { throwError } from 'rxjs';
 
 @Catch(RpcException)
-export class GlobalRpcExceptionFilter
-  implements RpcExceptionFilter<RpcException>
-{
+export class GlobalRpcExceptionFilter implements RpcExceptionFilter<RpcException> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  catch(exception: RpcException, _host: ArgumentsHost) {
+  catch(exception: RpcException, host: ArgumentsHost) {
     const error = exception.getError();
     const message = 'Internal server error';
     if (error instanceof HttpException) {
