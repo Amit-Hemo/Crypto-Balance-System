@@ -57,7 +57,7 @@ export class UserController {
       const user = await this.userService.getUserByEmail(email, {
         exposePassword: true,
       });
-      const message = `Successfully found and retreieved the user if exists`;
+      const message = `Successfully found and retrieved the user if exists`;
       this.logger.log(message);
       return user;
     } catch (error) {

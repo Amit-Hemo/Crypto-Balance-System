@@ -15,7 +15,7 @@ import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import * as utils from './utils/helpers';
 
-describe('AssetService', () => {
+describe('AuthService', () => {
   let authService: AuthService;
   let jwtService: JwtService;
   let cacheManager: Cache;

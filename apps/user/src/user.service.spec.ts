@@ -11,7 +11,7 @@ import { User as UserEntity } from './entities/User';
 import { UserService } from './user.service';
 import * as helpers from './utils/helpers';
 
-describe('BalanceService', () => {
+describe('UserService', () => {
   let userRepository: Repository<UserEntity>;
   let userService: UserService;
 
