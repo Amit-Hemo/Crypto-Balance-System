@@ -8,8 +8,8 @@ import * as joi from 'joi';
 import * as path from 'path';
 import { AssetModule } from './asset/asset.module';
 import { BalanceModule } from './balance/balance.module';
-import { Asset } from './entities/Asset';
-import { Balance } from './entities/Balance';
+import { Asset } from './entities/asset.entity';
+import { Balance } from './entities/balance.entity';
 
 @Module({
   imports: [
@@ -44,7 +44,7 @@ import { Balance } from './entities/Balance';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [Asset, Balance],
-        synchronize: true, // Disable in production,
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),

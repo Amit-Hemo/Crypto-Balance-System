@@ -16,7 +16,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom } from 'rxjs';
 import { DataSource, Repository } from 'typeorm';
 import { AssetService } from '../asset/asset.service';
-import { Balance } from '../entities/Balance';
+import { Balance } from '../entities/balance.entity';
 
 @Injectable()
 export class BalanceService {

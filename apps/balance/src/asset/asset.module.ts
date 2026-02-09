@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Asset } from '../entities/Asset';
+import { Asset } from '../entities/asset.entity';
 import { AssetService } from './asset.service';
 import { TTlTimes } from '@app/shared/cache/ttl-times';
 

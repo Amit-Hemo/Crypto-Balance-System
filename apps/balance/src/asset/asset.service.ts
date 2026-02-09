@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { Repository } from 'typeorm';
-import { Asset as AssetEntity } from '../entities/Asset';
+import { Asset as AssetEntity } from '../entities/asset.entity';
 
 @Injectable()
 export class AssetService {

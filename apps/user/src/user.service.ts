@@ -9,7 +9,7 @@ import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { User as UserEntity } from './entities/User';
+import { User as UserEntity } from './entities/user.entity';
 import { hashPassword } from './utils/helpers';
 
 @Injectable()

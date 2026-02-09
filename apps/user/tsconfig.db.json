@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist-db/apps/user/",
+    "rootDir": "./src",
+    "module": "commonjs",
+    "target": "ES2021"
+  },
+  "include": [
+    "./src/db/**/*",
+    "./src/**/*.entity.ts"
+  ]
+}

@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User as UserEntity } from './entities/User';
+import { User as UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 import * as helpers from './utils/helpers';
 

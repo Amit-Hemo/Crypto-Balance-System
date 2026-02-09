@@ -25,7 +25,7 @@
 ## Development Environment
 
 - **Package Manager**: NPM
-- **Runtime**: Node.js
+- **Runtime**: Node.js (v24)
 - **Local Dev Server**:
   - Run individual apps: `nest start <app_name> --watch` or `npm run start:dev <app_name>`
   - Convenience scripts: `npm run start:dev <app_name>` (must specify app name).
@@ -33,7 +33,7 @@
 ## Code Standards
 
 - **Formatter**: Prettier
-- **Linter**: ESLint
+- **Linter**: ESLint (Flat Config)
 - **Style Guide**: Standard NestJS structure/idioms (Modules, Controllers, Providers, DTOs).
 
 ## Testing Strategy
@@ -56,4 +56,4 @@
 - **Validation**: Input validation using `class-validator` and `joi` (env vars).
 - **Headers**: `helmet` is installed for HTTP header security.
 - **Rate Limiting**: `@nestjs/throttler` is installed.
-ed.
+  ed.

@@ -40,6 +40,7 @@ Detailed documentation is available in the `docs/` directory:
 The recommended way to run the system is via Docker.
 
 1.  **Configure Secrets**: Create `password.txt` files for your DB passwords in `apps/*/db/`.
+2.  **Environment Variables**: Create `.env` files for the services, (see `.env.example` for help).
 2.  **Run**:
     ```bash
     docker compose up --build
@@ -47,7 +48,7 @@ The recommended way to run the system is via Docker.
 3.  **Access**:
     - **API**: http://localhost:3000/api (Swagger UI)
 
-For manual local development (without Docker), please refer to the [Getting Started Guide](docs/getting-started.md).
+For manual local development (without Docker) and general, please refer to the [Getting Started Guide](docs/getting-started.md).
 
 ## 🧪 Testing
 

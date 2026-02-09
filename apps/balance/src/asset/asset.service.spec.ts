@@ -9,7 +9,7 @@ import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { of } from 'rxjs';
 import { Repository } from 'typeorm';
 import { AssetService } from '../asset/asset.service';
-import { Asset } from '../entities/Asset';
+import { Asset } from '../entities/asset.entity';
 
 describe('AssetService', () => {
   let assetService: AssetService;

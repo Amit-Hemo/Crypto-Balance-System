@@ -5,8 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AssetModule } from '../asset/asset.module';
-import { Asset } from '../entities/Asset';
-import { Balance } from '../entities/Balance';
+import { Asset } from '../entities/asset.entity';
+import { Balance } from '../entities/balance.entity';
 import { BalanceController } from './balance.controller';
 import { BalanceService } from './balance.service';
 

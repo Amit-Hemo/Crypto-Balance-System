@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist-db/apps/balance/",
+    "rootDir": "./src",
+    "module": "commonjs",
+    "target": "ES2021"
+  },
+  "include": [
+    "./src/db/**/*",
+    "./src/**/*.entity.ts"
+  ]
+}

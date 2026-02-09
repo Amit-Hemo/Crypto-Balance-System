@@ -6,7 +6,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as joi from 'joi';
 import * as path from 'path';
-import { User } from './entities/User';
+import { User } from './entities/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -36,7 +36,7 @@ import { UserService } from './user.service';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [User],
-        synchronize: true, // Disable in production
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),

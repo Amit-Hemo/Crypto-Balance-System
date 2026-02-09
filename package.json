@@ -7,6 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "build:db:balance": "tsc -p apps/balance/tsconfig.db.json",
+    "build:db:user": "tsc -p apps/user/tsconfig.db.json",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -20,7 +22,17 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/api-gateway/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/api-gateway/test/jest-e2e.json",
+    "migration:generate:balance": "DB_HOST=localhost DB_PORT=5432 npx typeorm-ts-node-commonjs migration:generate -d apps/balance/src/db/data-source.ts",
+    "migration:run:balance": "DB_HOST=localhost DB_PORT=5432 npx typeorm-ts-node-commonjs migration:run -d apps/balance/src/db/data-source.ts",
+    "migration:run:balance:prod": "npx typeorm migration:run -d dist-db/apps/balance/db/data-source.js",
+    "migration:revert:balance": "DB_HOST=localhost DB_PORT=5432 npx typeorm-ts-node-commonjs migration:revert -d apps/balance/src/db/data-source.ts",
+    "migration:revert:balance:prod": "npx typeorm migration:revert -d dist-db/apps/balance/db/data-source.js",
+    "migration:generate:user": "DB_HOST=localhost DB_PORT=5433 npx typeorm-ts-node-commonjs migration:generate -d apps/user/src/db/data-source.ts",
+    "migration:run:user": "DB_HOST=localhost DB_PORT=5433 npx typeorm-ts-node-commonjs migration:run -d apps/user/src/db/data-source.ts",
+    "migration:run:user:prod": "npx typeorm migration:run -d dist-db/apps/user/db/data-source.js",
+    "migration:revert:user": "DB_HOST=localhost DB_PORT=5433 npx typeorm-ts-node-commonjs migration:revert -d apps/user/src/db/data-source.ts",
+    "migration:revert:user:prod": "npx typeorm migration:revert -d dist-db/apps/user/db/data-source.js"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",

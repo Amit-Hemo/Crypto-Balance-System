@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ValueTransformer,
 } from 'typeorm';
-import { Asset } from './Asset';
+import { Asset } from './asset.entity';
 
 class DecimalColumnTransformer implements ValueTransformer {
   to(value: number): number {

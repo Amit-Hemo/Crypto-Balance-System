@@ -21,7 +21,7 @@ The **Crypto Balance System** is a microservices-based application built with **
 
 ### Infrastructure
 
-- **Containerization**: Docker & Docker Compose (planned/partial support).
+- **Containerization**: Docker & Docker Compose.
 - **Authentication**: JWT (JSON Web Tokens) via Passport strategy.
 
 ## High-Level Architecture

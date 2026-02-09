@@ -8,6 +8,7 @@ COPY package*.json ./
 RUN npm install 
 COPY . .
 RUN npm run build user
+RUN npm run build:db:user
 
 FROM node:${NODE_VERSION}-alpine AS production
 ARG NODE_ENV=production 
@@ -17,7 +18,9 @@ WORKDIR /usr/src/app
 COPY --from=development /usr/src/app/package.json .
 COPY --from=development /usr/src/app/node_modules ./node_modules
 COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/dist-db ./dist-db
+COPY apps/user/entrypoint.sh .
 
 EXPOSE 3003
 
-CMD npm run start:user:prod
+CMD ./entrypoint.sh

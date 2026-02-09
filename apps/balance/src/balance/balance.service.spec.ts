@@ -17,8 +17,8 @@ import { of } from 'rxjs';
 import { DataSource, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { AssetService } from '../asset/asset.service';
-import { Asset } from '../entities/Asset';
-import { Balance } from '../entities/Balance';
+import { Asset } from '../entities/asset.entity';
+import { Balance } from '../entities/balance.entity';
 import { BalanceService } from './balance.service';
 
 describe('BalanceService', () => {

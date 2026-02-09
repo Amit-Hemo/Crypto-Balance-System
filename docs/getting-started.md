@@ -1,6 +1,8 @@
 # Getting Started
 
-This guide will help you set up the **Crypto Balance System** locally for development and testing.
+This guide will help you set up the **Crypto Balance System** for development, production and testing.
+
+> _**Note**: Production environment is not yet set up, we simulate it using Docker Compose, so when we say production, we mean the production-like Docker environment._
 
 ## Prerequisites
 
@@ -38,13 +40,13 @@ This method runs all services and databases with a single command in a productio
     ```bash
     docker compose up --build
     ```
-    _Note: Tests currently need to be run manually outside of Docker._
+> _**Note**: Tests currently need to be run manually outside of Docker._
 
 ### Option 2: Local Development (Manual)
 
 To run services individually on your machine:
 
-1.  **Database**: Ensure you have PostgreSQL running locally and created the databases specified in your `.env` files (e.g., `user_db`, `balance_db`).
+1.  **Database**: Ensure you have PostgreSQL running locally and created the databases specified in your `.env` files (e.g., `users_db`, `balances_db`) and also run the migrations (list of commands in the migration section).
 2.  **Start Services**:
     Open separate terminal tabs for each service. **Note**: You must run each service individually; there is no script to run them all at once.
 
@@ -58,7 +60,47 @@ To run services individually on your machine:
     npm run start:dev api-gateway
     ```
 
-    _The `start:dev` script is a convenience wrapper for `nest start <app_name> --watch`._
+> _**Note**: The `start:dev` script is a convenience wrapper for `nest start <app_name> --watch`._
+
+### Database Migrations
+
+The project uses TypeORM Migrations to manage database schema changes.
+
+1.  **Generate Migration**:
+    If you modify an entity, generate a migration file locally using the following script:
+
+    ```bash
+    npm run migration:generate:<app_name> -- <path_to_migration_file>
+    # Example: npm run migration:generate:user -- apps/user/src/db/migrations/AddUserField
+    ```
+
+2.  **Run Migrations**:
+    Apply pending migrations to the database:
+
+    ```bash
+    # Local database migrations:
+    npm run migration:run:<app_name>
+    # Example: npm run migration:run:user
+
+    # Production database migrations:
+    docker exec <service_name> npm run migration:run:<app_name>:prod
+    # Example: docker exec user-service npm run migration:run:user:prod
+    ```
+
+> _**Note**: Migrations are run automatically when the application starts with docker compose._
+
+3.  **Revert Migration**:
+    Undo the last applied migration:
+
+    ```bash
+    # Local database migrations:
+    npm run migration:revert:<app_name>
+    # Example: npm run migration:revert:user
+
+    # Production database migrations:
+    docker exec <service_name> npm run migration:revert:<app_name>:prod
+    # Example: docker exec user-service npm run migration:revert:user:prod
+    ```
 
 ## Testing
 
